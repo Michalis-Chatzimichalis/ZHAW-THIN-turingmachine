@@ -1,4 +1,4 @@
-# ZHAW-thin-turingmachine
+# ZHAW-THIN-turingmachine
 
 ## Inhaltsverzeichnis
 <!-- TOC -->
