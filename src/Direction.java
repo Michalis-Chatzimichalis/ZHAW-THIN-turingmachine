@@ -4,7 +4,7 @@ public enum Direction {
     RIGHT('R', "00");
 
     private final char displayChar;
-    private final String code; // Die binäre Kodierung der Richtung
+    private final String code;
 
     Direction(char displayChar, String code) {
         this.displayChar = displayChar;
@@ -17,14 +17,6 @@ public enum Direction {
      */
     public char getChar() {
         return displayChar;
-    }
-
-    /**
-     * Gibt die binäre Kodierung der Richtung als String zurück ("0" oder "00").
-     * @return Der Kodierungsstring.
-     */
-    public String getCode() {
-        return code;
     }
 
     /**

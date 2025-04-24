@@ -21,14 +21,6 @@ public enum Symbol {
     }
 
     /**
-     * Gibt die binäre Kodierung des Symbols als String zurück (z.B. "0", "00", "000").
-     * @return Der Kodierungsstring.
-     */
-    public String getCode() {
-        return code;
-    }
-
-    /**
      * Findet ein Symbol anhand seiner binären Kodierung.
      * @param code Der Kodierungsstring (z.B. "0", "00", "000").
      * @return Das entsprechende Symbol-Enum.
@@ -50,7 +42,6 @@ public enum Symbol {
      * @throws IllegalArgumentException Wenn das Zeichen keinem Symbol zugeordnet ist.
      */
     public static Symbol fromChar(char c) {
-        // Effizientere Prüfung für das häufige Blank-Symbol
         if (c == BLANK.displayChar) return BLANK;
         for (Symbol s : values()) {
             if (s.displayChar == c) {
@@ -66,7 +57,6 @@ public enum Symbol {
       */
      @Override
      public String toString() {
-         // Die Zeichenrepräsentation ist oft intuitiver als der Enum-Name.
          return String.valueOf(displayChar);
      }
 } 
