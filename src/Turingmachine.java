@@ -1,6 +1,5 @@
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Scanner; // Für Step-Modus Eingabe
 
 public class Turingmachine {
