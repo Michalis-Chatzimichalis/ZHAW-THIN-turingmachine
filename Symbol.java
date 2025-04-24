@@ -1,0 +1,72 @@
+// Definiert die Symbole, die von der Turingmaschine verwendet werden.
+public enum Symbol {
+    ZERO('0', "0"),
+    ONE('1', "00"),
+    BLANK('_', "000"); // Das Blank-Symbol des Bandes
+
+    private final char displayChar;
+    private final String code; // Die binäre Kodierung des Symbols
+
+    Symbol(char displayChar, String code) {
+        this.displayChar = displayChar;
+        this.code = code;
+    }
+
+    /**
+     * Gibt die Zeichenrepräsentation des Symbols zurück (z.B. '0', '1', '_').
+     * @return Das Zeichen des Symbols.
+     */
+    public char getChar() {
+        return displayChar;
+    }
+
+    /**
+     * Gibt die binäre Kodierung des Symbols als String zurück (z.B. "0", "00", "000").
+     * @return Der Kodierungsstring.
+     */
+    public String getCode() {
+        return code;
+    }
+
+    /**
+     * Findet ein Symbol anhand seiner binären Kodierung.
+     * @param code Der Kodierungsstring (z.B. "0", "00", "000").
+     * @return Das entsprechende Symbol-Enum.
+     * @throws IllegalArgumentException Wenn der Code ungültig ist.
+     */
+    public static Symbol fromCode(String code) {
+        for (Symbol s : values()) {
+            if (s.code.equals(code)) {
+                return s;
+            }
+        }
+        throw new IllegalArgumentException("Unsupported symbol code: " + code);
+    }
+
+    /**
+     * Findet ein Symbol anhand seiner Zeichenrepräsentation.
+     * @param c Das Zeichen (z.B. '0', '1', '_').
+     * @return Das entsprechende Symbol-Enum.
+     * @throws IllegalArgumentException Wenn das Zeichen keinem Symbol zugeordnet ist.
+     */
+    public static Symbol fromChar(char c) {
+        // Effizientere Prüfung für das häufige Blank-Symbol
+        if (c == BLANK.displayChar) return BLANK;
+        for (Symbol s : values()) {
+            if (s.displayChar == c) {
+                return s;
+            }
+        }
+       throw new IllegalArgumentException("Unsupported symbol character: " + c);
+    }
+
+     /**
+      * Gibt die Zeichenrepräsentation des Symbols zurück.
+      * @return Das Zeichen des Symbols als String.
+      */
+     @Override
+     public String toString() {
+         // Die Zeichenrepräsentation ist oft intuitiver als der Enum-Name.
+         return String.valueOf(displayChar);
+     }
+} 
