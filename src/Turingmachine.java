@@ -4,21 +4,16 @@ import java.util.Scanner; // Für Step-Modus Eingabe
 
 public class Turingmachine {
 
-    // --- Konstanten ---
-    // private static final char BLANK_SYMBOL = '_'; // Entfernt, Symbol.BLANK verwenden
     private static final String INITIAL_STATE = "q0";
     private static final int MAX_STEPS = 10000;
-
-    // --- Felder ---
     private String currentState;
-    private Map<Integer, Symbol> tape; // Verwendet externes Enum Symbol
+    private Map<Integer, Symbol> tape;
     private int headPosition;
     private long stepCount;
     private Map<TransitionKey, TransitionValue> transitions;
     private boolean halted;
     private Scanner scanner;
 
-    // --- Konstruktoren ---
     public Turingmachine() {
         this.tape = new HashMap<>();
         this.headPosition = 0;
@@ -40,23 +35,40 @@ public class Turingmachine {
         }
     }
 
-    // --- Kodierung/Dekodierung ---
+    /**
+     * Dekodiert den Zustand aus dem TM-Code.
+     * @param code
+     * @return
+     */
     private String decodeState(String code) {
         if (!code.matches("0+")) throw new IllegalArgumentException("Invalid state code: " + code);
         return "q" + (code.length() - 1);
     }
 
-    // Verwendet jetzt Symbol.fromCode
+    /**
+     * Dekodiert vom Symbol.fromCode
+     * @param code
+     * @return
+     */
     private Symbol decodeSymbol(String code) {
         return Symbol.fromCode(code);
     }
 
-    // Verwendet jetzt Direction.fromCode
+    /**
+     * Dekodiert eine Bewegung aus dem TM-Code.
+     * @param code
+     * @return
+     */
     private Direction decodeMove(String code) {
         return Direction.fromCode(code);
     }
 
 
+    /**
+     * Dekodiert ein Symbol aus dem TM-Code.
+     * @param tmCode
+     * @return
+     */
     private void parseTMCoding(String tmCode) {
         if (tmCode == null || tmCode.isEmpty()) {
             throw new IllegalArgumentException("TM code cannot be empty.");
@@ -78,10 +90,10 @@ public class Turingmachine {
 
             try {
                 String currentStateStr = decodeState(parts[0]);
-                Symbol readSymbol = decodeSymbol(parts[1]); // Ruft die angepasste Methode auf
+                Symbol readSymbol = decodeSymbol(parts[1]);
                 String nextStateStr = decodeState(parts[2]);
-                Symbol writeSymbol = decodeSymbol(parts[3]); // Ruft die angepasste Methode auf
-                Direction moveDir = decodeMove(parts[4]);   // Ruft die angepasste Methode auf
+                Symbol writeSymbol = decodeSymbol(parts[3]);
+                Direction moveDir = decodeMove(parts[4]);
 
                 TransitionKey key = new TransitionKey(currentStateStr, readSymbol);
                 TransitionValue value = new TransitionValue(nextStateStr, writeSymbol, moveDir);
@@ -115,7 +127,7 @@ public class Turingmachine {
                 }
                 StringBuilder unary = new StringBuilder();
                 for (int i = 0; i < decimalValue; i++) {
-                    unary.append(Symbol.ZERO.getChar()); // Verwende Char von externem Enum
+                    unary.append(Symbol.ZERO.getChar());
                 }
                 tapeInput = unary.toString();
                 System.out.println("Converted decimal input " + input + " to unary: '" + tapeInput + "'");
@@ -125,12 +137,12 @@ public class Turingmachine {
         }
 
         tape.clear();
-        tape.put(0, Symbol.BLANK); // Verwende externes Enum
+        tape.put(0, Symbol.BLANK);
         headPosition = 1;
 
         for (int i = 0; i < tapeInput.length(); i++) {
             try {
-                tape.put(headPosition + i, Symbol.fromChar(tapeInput.charAt(i))); // Verwende externes Enum
+                tape.put(headPosition + i, Symbol.fromChar(tapeInput.charAt(i)));
             } catch (IllegalArgumentException e) {
                 System.err.println("Internal error: Failed to convert character '" + tapeInput.charAt(i) + "' to Symbol.");
                 this.halted = true;
@@ -145,14 +157,15 @@ public class Turingmachine {
         System.out.println("Input loaded. Initial state: " + currentState + ", Head at: " + headPosition);
     }
 
-    // --- Ausführung ---
+    /**
+     * Führt einen Schritt der Turingmaschine aus.
+     */
     public void step() {
         if (halted) {
-            return; // Weniger verbose
+            return;
         }
 
-        Symbol currentSymbol = tape.getOrDefault(headPosition, Symbol.BLANK); // Verwende externes Enum
-
+        Symbol currentSymbol = tape.getOrDefault(headPosition, Symbol.BLANK);
         TransitionKey key = new TransitionKey(currentState, currentSymbol);
         TransitionValue rule = transitions.get(key);
 
@@ -165,14 +178,14 @@ public class Turingmachine {
         currentState = rule.nextState;
         tape.put(headPosition, rule.writeSymbol);
 
-        if (rule.moveDirection == Direction.LEFT) { // Verwende externes Enum
+        if (rule.moveDirection == Direction.LEFT) {
             headPosition--;
-        } else if (rule.moveDirection == Direction.RIGHT) { // Verwende externes Enum
+        } else if (rule.moveDirection == Direction.RIGHT) {
             headPosition++;
         }
 
         if (!tape.containsKey(headPosition)) {
-            tape.put(headPosition, Symbol.BLANK); // Verwende externes Enum
+            tape.put(headPosition, Symbol.BLANK);
         }
 
         stepCount++;
@@ -183,6 +196,10 @@ public class Turingmachine {
         }
     }
 
+    /**
+     * Führt die Turingmaschine im angegebenen Modus aus.
+     * @param stepMode true für Schrittmodus, false für Ausführungsmodus
+     */
     public void run(boolean stepMode) {
         if (halted) {
             System.out.println("Machine cannot run, it's already in a halted state.");
@@ -231,7 +248,9 @@ public class Turingmachine {
     }
 
 
-    // --- Ausgabe ---
+    /**
+     * Gibt den aktuellen Zustand der Turingmaschine aus.
+     */
     public void printState() {
         System.out.println("--- Step: " + (stepCount + 1) + " ---");
         System.out.println("b) State: " + currentState);
@@ -248,7 +267,7 @@ public class Turingmachine {
             if (i == headPosition) {
                 tapeString.append('X');
             } else {
-                tapeString.append(tape.getOrDefault(i, Symbol.BLANK).getChar()); // Hole Char von externem Enum
+                tapeString.append(tape.getOrDefault(i, Symbol.BLANK).getChar());
             }
         }
         tapeString.append('|');
@@ -259,6 +278,9 @@ public class Turingmachine {
         System.out.println("-------------------------");
     }
 
+    /**
+     * Gibt den finalen Zustand der Turingmaschine aus.
+     */
     public void printFinalState() {
         System.out.println("=========================");
         System.out.println("      FINAL STATE");
@@ -276,55 +298,32 @@ public class Turingmachine {
             }
         }
 
+        // Fallback auf 0, wenn Band leer oder nur Blanks
         if (minPos == null) {
-            minPos = 0; // Fallback auf 0 wenn Band leer oder nur Blanks
+            minPos = 0;
             maxPos = 0;
         }
 
-        int i = minPos;
         // Lese vom ersten bis zum letzten Nicht-Blank Zeichen (inklusive dazwischenliegender Blanks)
+        int i = minPos;
         while (i <= maxPos) {
-            result.append(tape.getOrDefault(i, Symbol.BLANK).getChar()); // Hole Char von externem Enum
+            result.append(tape.getOrDefault(i, Symbol.BLANK).getChar());
             i++;
         }
-        // Hier könnte man noch nachfolgende Blanks am Ende entfernen, wenn gewünscht.
 
         System.out.println("a) Extracted Result: '" + (result.length() > 0 ? result.toString() : "<empty>") + "'");
         System.out.println("=========================");
     }
 
-
-    // --- Main Methode ---
     public static void main(String[] args) {
-        if (args.length < 2 || args.length > 3) {
-            System.out.println("Usage: java Turingmachine <tm_code> <input> [mode]");
-            System.out.println("  <tm_code>: Binary TM code string.");
-            System.out.println("  <input>:   Input string (binary or non-negative decimal).");
-            System.out.println("  [mode]:    Optional 'step' for step-by-step execution, default is 'run'.");
-            System.out.println("\nExample TMs (from lecture notes - ensure correct encoding):");
-            System.out.println(" T1 = 010010001010011000101010010110001001001010011000100010001010");
-            System.out.println(" T2 = 1010010100100110101000101001100010010100100110001010010100");
-            return;
-        }
+        String tmSource = "010010001010011000101010010110001001001010011000100010001010"; // T1
+        //String tmSource = "1010010100100110101000101001100010010100100110001010010100"; // T2
+        String input = "111";
+        boolean stepMode = true;
 
-        String tmSource = args[0];
-        String input = args[1];
-        boolean stepMode = false;
-        if (args.length == 3 && "step".equalsIgnoreCase(args[2])) {
-            stepMode = true;
-        }
+        Turingmachine tm = new Turingmachine(tmSource, input);
 
-        Turingmachine tm = null;
-
-        // Prüfe, ob der TM-Code eine gültige Binärzeichenkette ist
-        if (tmSource.matches("[01]+")) {;
-            tm = new Turingmachine(tmSource, input);
-        } else {
-            System.err.println("Error: TM code must be a binary string (containing only '0' and '1'). Invalid code: " + tmSource);
-            return;
-        }
-
-        if (tm != null && !tm.halted) {
+        if (!tm.halted) {
             tm.run(stepMode);
         } else {
             System.err.println("Turing machine initialization failed. Cannot run.");
