@@ -2,7 +2,12 @@
 public enum Symbol {
     ZERO('0', "0"),
     ONE('1', "00"),
-    BLANK('_', "000"); // Das Blank-Symbol des Bandes
+    BLANK('_', "000"),
+    I('I', "0000"),
+    C('C', "00000"),
+    D('D', "000000"),
+    W('W', "0000000"),
+    X('X', "00000000");
 
     private final char displayChar;
     private final String code; // Die binäre Kodierung des Symbols
